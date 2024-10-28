@@ -1,5 +1,6 @@
 package stepdefinitions;
 
+import POJO.GoRest.GoRestCreateUserPojo;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -13,6 +14,7 @@ import io.restassured.specification.ResponseSpecification;
 import org.junit.Assert;
 
 import static io.restassured.RestAssured.given;
+import static util.GoRestObj.getCreateUserGoRestPayLoad;
 
 public class GoRestSD {
     RequestSpecification requestSpecification;
@@ -20,6 +22,7 @@ public class GoRestSD {
     Response response;
     ResponseSpecification responseSpecification;
     String responseStr;
+    GoRestCreateUserPojo goRestCreateUserPojo;
 
     @Given("create user for GoRest is created")
     public void createUserForGoRestIsCreated() {
@@ -56,9 +59,13 @@ public class GoRestSD {
                 .expectStatusCode(Integer.parseInt(expectedStatusCode))
                 .build();
 
-         responseStr = response.then().log().all()
+        /* responseStr = response.then().log().all()
                 .spec(responseSpecification)
-                .extract().asString();
+                .extract().asString();*/
+
+         goRestCreateUserPojo = response.then().log().all()
+                .spec(responseSpecification)
+                .extract().as(GoRestCreateUserPojo.class);
     }
 
     @Then("{string} should for GoRest be {string}")
@@ -66,6 +73,39 @@ public class GoRestSD {
         // Implement this method
         JsonPath jsonPath = new JsonPath(responseStr);
         String actualValue = jsonPath.get(jPath);
+
+        Assert.assertEquals(expectedValue,actualValue);
+    }
+
+
+    @Given("create user for GoRest is created with {} , {} , {} and {}")
+    public void createUserForGoRestIsCreatedWithAnd(String name, String email, String gender, String status) {
+
+        requestSpecification = new RequestSpecBuilder()
+                .setBaseUri("https://gorest.co.in/")
+                //  .setAuth(auth)
+                .addHeader("Authorization","Bearer 8769cc34965691163d0f8f5ad427102a5bebad9a1a7b8802777b1d41cf674efd")
+                .setContentType("application/json")
+                .build();
+
+        /*request = given().log().all().spec(requestSpecification)
+                .body(" {\n" +
+                        "    \"name\": \""+name+"\",\n" +
+                        "    \"email\": \""+email+"\",\n" +
+                        "    \"gender\": \""+gender+"\",\n" +
+                        "    \"status\": \""+status+"\"\n" +
+                        "  }");*/
+        request = given().log().all().spec(requestSpecification)
+                .body(getCreateUserGoRestPayLoad(name, email, gender, status));
+    }
+
+    @Then("{string} should for GoRest be {}")
+    public void shouldForGoRestBe(String jPath, String expectedValue) {
+        // Implement this method
+       /* JsonPath jsonPath = new JsonPath(responseStr);
+        String actualValue = jsonPath.get(jPath);*/
+
+        String actualValue = goRestCreateUserPojo.getEmail();
 
         Assert.assertEquals(expectedValue,actualValue);
     }
