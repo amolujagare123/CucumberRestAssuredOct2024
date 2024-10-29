@@ -5,7 +5,21 @@ Feature: all Go rest requests
     Given create user for GoRest is created
     When I send post request with create user for GoRest
     Then status code should for GoRest be "201"
-    Then "email" should for GoRest be "amol@gmail.com"
+    Then "email" should be for GoRest be "amol@gmail.com"
+
+
+
+  @CreateUserGoREST2
+  Scenario: to very the user is created successfully
+    Given create user for GoRest is created with below Dta
+      | vaishali 1 | vaishali1@ gmail.com | female |  active |
+  #  When I send post request with create user for GoRest
+    When I send post request with create user for GoRest
+
+#    Then status code should for GoRest be "201"
+#    Then "email" should be for GoRest be "amol@gmail.com"
+
+
 
   @CreateUserGoRESTMultiple
   Scenario Outline: to very the user is created successfully

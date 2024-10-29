@@ -8,7 +8,8 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "features"
         ,glue="stepdefinitions"
-, tags = "@CreateUserGoRESTMultiple"
+, tags = "@CreateUserGoREST2"
+
 )
 public class TestRunner {
 }
